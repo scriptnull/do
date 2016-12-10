@@ -8,6 +8,7 @@ import (
 	"github.com/digitalocean/godo"
 	"github.com/streadway/amqp"
 	"log"
+	"os"
 )
 
 func failOnError(err error, msg string) {
@@ -24,7 +25,12 @@ type Message struct {
 }
 
 func main() {
-	conn, err := amqp.Dial("amqp://devbotuser:devbotpass@172.17.0.1:5672/")
+	ampqUser := os.Getenv("AMQP_USER")
+	amqpPassword := os.Getenv("AMQP_PASS")
+	amqpHost := os.Getenv("AMQP_HOST")
+	amqpConnectionStr := "amqp://"+ ampqUser +":"+ amqpPassword +"@"+ amqpHost +":5672/"
+	// amqpConnectionStr := "amqp://devbotuser:devbotpass@172.17.0.1:5672/"
+	conn, err := amqp.Dial(amqpConnectionStr)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
