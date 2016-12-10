@@ -19,6 +19,7 @@ func failOnError(err error, msg string) {
 type Message struct {
 	Token   string      `json:"token"`
 	Action  string      `json:"action"`
+	UserId  string 			`json:"userid"`
 	Payload string	    `json:"payload"`
 }
 
@@ -84,16 +85,17 @@ func main() {
 				return
 			}
 
+			log.Printf("STATE: starting, ACTION: %s, SLACK_USER_ID: %s", inMessage.Action, inMessage.UserId)
 			doClient := doproxy.GetDoClient(inMessage.Token)
 			if doClient == nil {
-				fmt.Println("client instantiation failed. Unable to access digital ocean API")
+				fmt.Println("Client instantiation failed. Unable to access digital ocean API")
 				return
 			}
-
 			actionResult := doAction(doClient, inMessage.Action, inMessage.Payload)
+			actionResult.UserId = inMessage.UserId
+			log.Printf("STATE: ended, ACTION: %s, SLACK_USER_ID: %s", inMessage.Action, inMessage.UserId)
 
 			messageToBeSent, _ := json.Marshal(actionResult)
-
 			publishActionResult(ch, messageToBeSent)
 		}
 	}()

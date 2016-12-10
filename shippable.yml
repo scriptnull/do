@@ -1,0 +1,14 @@
+language: go
+
+go:
+  - 1.7
+
+build:
+  ci:
+    - docker build -t="scriptnull/devbot-do:build.$BUILD_NUMBER" .
+    - docker push scriptnull/devbot-do:build.$BUILD_NUMBER
+
+integration:
+  hub:
+    - name: scriptnull-docker
+      type: docker
