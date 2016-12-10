@@ -5,6 +5,7 @@ go:
 
 build:
   ci:
+    - cd ./src/github.com/devbot-xyz/do/ && go build
     - docker build -t="scriptnull/devbot-do:build.$BUILD_NUMBER" .
     - docker push scriptnull/devbot-do:build.$BUILD_NUMBER
 
